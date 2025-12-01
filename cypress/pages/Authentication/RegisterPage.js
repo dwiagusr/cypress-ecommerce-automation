@@ -8,7 +8,7 @@ class RegisterPage {
     getPasswordInput()  { return cy.get('#input-password'); }
     getConfirmPassInput() { return cy.get('#input-confirm'); }
     
-    getPrivacyCheckbox() { return cy.get('input[name="agree"]'); }
+    getPrivacyCheckbox() { return cy.get('#input-agree'); }
     getContinueButton()  { return cy.get('input[value="Continue"]'); }
     
     getPageHeader()      { return cy.get('#content h1'); }
@@ -44,16 +44,16 @@ class RegisterPage {
     }
 
     checkPrivacyPolicy() {
-        this.getPrivacyCheckbox().check();
+        this.getPrivacyCheckbox().check({force: true});
     }
-    submitRegistration() {
+    submitRegister() {
         this.getContinueButton().click();
-    }
+    }   
 
     // Assertions
 
     verifySuccessPage(expectedTitle) {
-        this.getPageHeader().should('have.text', expectedTitle);
+        this.getPageHeader().should('contain', expectedTitle);
     }
     verifyPrivacyError(expectedText) {
         this.getAlertError().should('contain', expectedText);

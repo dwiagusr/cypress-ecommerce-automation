@@ -13,7 +13,7 @@ class LoginPage {
     }
     
     getAccountHeading() {
-        return cy.get('#content > h2');
+        return cy.contains('h2', 'My Account');
     }
 
     // [PENTING] Selector ini yang dicari oleh tes Anda sekarang
@@ -44,19 +44,8 @@ class LoginPage {
 
     // [PENTING] Fungsi ini yang menyebabkan error "is not a function" tadi
     // Pastikan fungsi ini ada di dalam kurung kurawal class LoginPage
-verifyErrorMessage(expectedText) {
-        // Ambil elemen alert
-        this.getErrorAlert().then(($alert) => {
-            // Ambil teks aslinya
-            const actualText = $alert.text();
-            
-            // Cetak ke log Cypress (agar kita bisa baca)
-            cy.log(`Teks yang ditemukan di website: "${actualText}"`);
-            cy.log(`Teks yang kita cari: "${expectedText}"`);
-            
-            // Lakukan pengecekan
-            expect(actualText).to.include(expectedText);
-        });
+    verifyErrorMessage(expectedText) {
+        this.getErrorAlert().should('contain', expectedText);
     }
 }
 

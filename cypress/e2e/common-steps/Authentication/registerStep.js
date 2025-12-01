@@ -19,6 +19,7 @@ When('pengguna menyetujui kebijakan privasi', () => {
 });
 
 When('pengguna menekan tombol continue registrasi', () => {
+    cy.wait(2000); // Tunggu sebentar sebelum submit
     registerPage.submitRegister();
 });
 
