@@ -4,24 +4,24 @@ import LoginPage from '../../../pages/Authentication/LoginPage';
 
 const loginPage = new LoginPage();
 
-Given('pengguna berada di halaman login', () => {
+Given('I am on the login page', () => {
   loginPage.visitLoginPage();
 });
 
-When('pengguna memasukkan username {string} dan password {string}', (username, password) => {
+When('I enter username {string} and password {string}', (username, password) => {
   loginPage.fillLoginDetails(username, password);
 });
 
-When('pengguna menekan tombol login', () => {
+When('I click the login button', () => {
   loginPage.submitLogin();
 });
 
-// [INI YANG HARUS DITAMBAHKAN KEMBALI]
-Then('pengguna akan melihat halaman My Account', () => {
-  loginPage.verifySuccessLogin();
+Then('I should see the {string} page', (pageName) => {
+  // Kita buat dinamis, jadi bisa cek "My Account" atau halaman lain
+  // Tapi fungsinya tetap memanggil verifySuccessLogin untuk saat ini
+  loginPage.verifySuccessLogin(); 
 });
 
-// Step untuk error (biarkan saja jika ingin tetap dipakai)
-Then('pengguna akan melihat pesan error {string}', (errorMessage) => {
+Then('I should see an error message containing {string}', (errorMessage) => {
   loginPage.verifyErrorMessage(errorMessage);
 });

@@ -6,27 +6,26 @@ const registerPage = new RegisterPage();
 
 // Step Definitions untuk Registrasi
 
-Given('pengguna berada di halaman registrasi', () => {
+Given('I am on the registration page', () => {
     registerPage.visitRegisterPage();
 });
 
-When('pengguna mengisi form registrasi dengan data valid', () => {
+When('I fill the registration form with valid data', () => {
     registerPage.fillRegistrationForm();
 });
 
-When('pengguna menyetujui kebijakan privasi', () => {
+When('I agree to the privacy policy', () => {
     registerPage.checkPrivacyPolicy();
 });
 
-When('pengguna menekan tombol continue registrasi', () => {
-    cy.wait(2000); // Tunggu sebentar sebelum submit
+When('I click the continue button', () => {
     registerPage.submitRegister();
 });
 
-Then('pengguna akan melihat judul halaman {string}', (title) => {
+Then('I should see the page title {string}', (title) => {
     registerPage.verifySuccessPage(title);
 });
 
-Then('pengguna akan melihat pesan error privasi {string}', (errorMessage) => {
+Then('I should see a privacy error message {string}', (errorMessage) => {
     registerPage.verifyPrivacyError(errorMessage);
 });

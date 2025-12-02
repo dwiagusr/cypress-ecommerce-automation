@@ -1,15 +1,16 @@
-Feature: Registrasi Pengguna Baru
+@Registration
+Feature: User Registration
 
-  Scenario: Registrasi Berhasil dengan Data Unik
-    Given pengguna berada di halaman registrasi
-    When pengguna mengisi form registrasi dengan data valid
-    And pengguna menyetujui kebijakan privasi
-    And pengguna menekan tombol continue registrasi
-    Then pengguna akan melihat judul halaman "Your Account Has Been Created!"
+  Scenario: Successful Registration with Unique Data
+    Given I am on the registration page
+    When I fill the registration form with valid data
+    And I agree to the privacy policy
+    And I click the continue button
+    Then I should see the page title "Your Account Has Been Created!"
 
-  Scenario: Registrasi Gagal Tanpa Kebijakan Privasi
-    Given pengguna berada di halaman registrasi
-    When pengguna mengisi form registrasi dengan data valid
-    # Sengaja tidak menyetujui privasi
-    And pengguna menekan tombol continue registrasi
-    Then pengguna akan melihat pesan error privasi "Warning: You must agree to the Privacy Policy!"
+  Scenario: Failed Registration without Privacy Policy
+    Given I am on the registration page
+    When I fill the registration form with valid data
+    # Intentionally skipping privacy policy
+    And I click the continue button
+    Then I should see a privacy error message "Warning: You must agree to the Privacy Policy!"

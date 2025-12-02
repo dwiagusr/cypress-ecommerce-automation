@@ -1,15 +1,15 @@
-Feature: Fungsionalitas Login di Website
+Feature: Login Functionality
 
-  # Skenario 1: Login Berhasil (User Tetap)
-  Scenario: Login Berhasil dengan User Tetap
-    Given pengguna berada di halaman login
-    When pengguna memasukkan username "test.user.1764607288632@mail.com" dan password "Password123!"
-    And pengguna menekan tombol login
-    Then pengguna akan melihat halaman My Account
+  # Scenario 1: Successful Login
+  Scenario: Successful Login with Existing User
+    Given I am on the login page
+    When I enter username "test.user.1764607288632@mail.com" and password "Password123!"
+    And I click the login button
+    Then I should see the "My Account" page
 
-  # Skenario 2: Login Gagal (Bisa tetap disimpan atau dihapus)
-  Scenario: Login Gagal dengan Email Salah
-    Given pengguna berada di halaman login
-    When pengguna memasukkan username "salah@mail.com" dan password "ngawur"
-    And pengguna menekan tombol login
-    Then pengguna akan melihat pesan error "Warning"
+  # Scenario 2: Failed Login
+  Scenario: Failed Login with Incorrect Credentials
+    Given I am on the login page
+    When I enter username "wrong@mail.com" and password "wrongpass"
+    And I click the login button
+    Then I should see an error message containing "Warning"
