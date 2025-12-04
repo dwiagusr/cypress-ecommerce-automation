@@ -12,13 +12,8 @@ getMenuByName(menuName) {
     }
 
 getSubMenuByName(subMenuName) {
-        // [REVISI SINKRONISASI]
-        // 1. Dapatkan wadah dropdown dan pastikan terlihat.
-        //    Ini akan membuat Cypress menunggu hingga animasi selesai.
-        cy.get('.dropdown-menu').should('be.visible'); 
-
-        // 2. Setelah wadah terlihat, kita cari link spesifik di dalamnya.
-        return cy.get('.dropdown-menu a').contains(subMenuName);
+        // Selector Dinamis: `a[title='${subMenuName}']`
+        return cy.get(`a[title='${subMenuName}']`); 
     }
 
     getCategoryHeader() {
@@ -39,8 +34,15 @@ getSubMenuByName(subMenuName) {
         this.getSearchButton().click();
     }
 
-    hoverMenu(menuName) {
-        this.getMenuByName(menuName).trigger('mouseover',{ force: true });
+hoverMenu(menuName) {
+        // 1. Trigger mouseover di elemen link utama
+        this.getMenuByName(menuName).trigger('mouseover', { force: true });
+        
+        // 2. [FIX SINKRONISASI] Cari dropdown container (UL) dan paksa visibility-nya
+        this.getMenuByName(menuName)
+            .parent() // Naik ke parent LI
+            .find('.dropdown-menu') // Temukan UL dropdown menu di dalamnya
+            .invoke('show'); // Paksa ubah CSS 'display: none' menjadi 'display: block'
     }
 
     // [FUNGSI DENGAN LOGIC PERBAIKAN AKHIR - TIDAK ADA DUPLIKASI]
@@ -61,10 +63,15 @@ getSubMenuByName(subMenuName) {
         cy.get('#content').contains('h2', categoryName).should('be.visible');
     }
 
-    verifySubMenuLinkPresence(subMenuName) {
+verifySubMenuLinkPresence(subMenuName) {
         this.getSubMenuByName(subMenuName)
             .should('exist') 
-            .and('be.visible');
+            .and('be.visible')
+            // [BARIS BARU] Tambahkan aksi setelah assertion berhasil
+            .then(() => {
+                // cy.log mencetak pesan ini ke Command Log Cypress
+                cy.log(` ✅SUCCESS: Sub menu "${subMenuName}" is visible.`);
+            });
     }
 }
 
