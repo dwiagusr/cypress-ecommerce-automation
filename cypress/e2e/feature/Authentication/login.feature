@@ -1,3 +1,4 @@
+@login
 Feature: Login Functionality
 
   # Scenario 1: Successful Login
