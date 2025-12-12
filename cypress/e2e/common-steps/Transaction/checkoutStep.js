@@ -1,50 +1,89 @@
 import { Given, When, Then } from "@badeball/cypress-cucumber-preprocessor";
-import HomePage from '../../../../pages/Dashboard/HomePage';
-import ProductPage from '../../../../pages/Transaction/ProductPage';
-import CheckoutPage from '../../../../pages/Transaction/CheckoutPage';
+import HomePage from '../../../pages/Dashboard/HomePage';
+import ProductPage from '../../../pages/Transaction/ProductPage';
+import CheckoutPage from '../../../pages/Transaction/CheckoutPage';
 
 const homePage = new HomePage();
 const productPage = new ProductPage();
 const checkoutPage = new CheckoutPage();
 
-// --- Reuse Step dari HomePage ---
-Given('I search for product {string}', (productName) => {
+// =================================================================
+// SEARCH STEPS
+// =================================================================
+
+Given('I search for product {string}', function (productName) {
     homePage.searchProduct(productName);
 });
 
-Given('I click the search button', () => {
+When('I click the search button', function () {
     homePage.clickSearch();
 });
 
-// --- Product Steps ---
-When('I add the product to the cart', () => {
-    productPage.addToCart();
+// =================================================================
+// FILTER STEPS
+// =================================================================
+
+When('I verify for duplicate filter options named {string}', function (optionName) {
+    homePage.checkDuplicateFilters(optionName);
 });
 
-When('I proceed to checkout', () => {
+// Note: Ensure toggleFilter is handled correctly if the filter is collapsed by default
+When('I filter the results by {string}', function (filterName) {
+    homePage.toggleFilter(filterName); 
+});
+
+When('I select {string} from the filter options', function (optionName) {
+    homePage.selectFilterOption(optionName);
+});
+
+// =================================================================
+// PRODUCT DETAIL & CART STEPS
+// =================================================================
+
+When('I select {string} from the search results', function (productName) {
+    productPage.openProductDetail(productName);
+});
+
+When('I verify the product is in stock', function () {
+    productPage.verifyProductInStock();
+});
+
+When('I add the product to the cart', function () {
+    productPage.clickAddToCart();
+});
+
+When('I proceed to checkout', function () {
     productPage.proceedToCheckout();
 });
 
-// --- Checkout Steps ---
-When('I fill the billing details with valid data', () => {
-    // Karena user mungkin sudah punya alamat (jika tes dijalankan 2x),
-    // langkah ini mungkin perlu penyesuaian nanti.
-    // Tapi untuk sekarang kita asumsikan user mengisi alamat baru.
+// =================================================================
+// CHECKOUT STEPS
+// =================================================================
+
+When('I fill the billing details with valid data', function () {
+    // Fills the address form. Logic to handle "New Address" radio button is inside the Page Object.
     checkoutPage.fillBillingDetails();
 });
 
-When('I confirm the delivery method', () => {
-    checkoutPage.confirmDeliveryMethod();
+When('I fill the order comment {string} and agree to terms', function (comment) {
+    // Input the order comment and check the Terms & Conditions box
+    checkoutPage.fillOrderComment(comment);
+    checkoutPage.agreeTermsAndConditions();
+    checkoutPage.clickContinue();
 });
 
-When('I confirm the payment method', () => {
-    checkoutPage.confirmPaymentMethod();
+// [NEW STEP] Verifying the Order Summary Section
+When('I verify the order summary details with product {string} and comment {string}', function (productName, comment) {
+    // Validate the product name, address details, and comment in the summary section before confirming
+    checkoutPage.verifyOrderSummary(productName, comment);
 });
 
-When('I confirm the order', () => {
+When('I confirm the order', function () {
+    // Click the final "Continue" or "Confirm" button to place the order
     checkoutPage.clickConfirmOrder();
 });
 
-Then('I should see the order success message {string}', (message) => {
+Then('I should see the order success message {string}', function (message) {
+    // Verify the success landing page
     checkoutPage.verifyOrderSuccess(message);
 });

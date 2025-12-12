@@ -1,4 +1,4 @@
-import { Given, When, Then } from "@badeball/cypress-cucumber-preprocessor";
+import { Given, When, Then, And } from "@badeball/cypress-cucumber-preprocessor";
 // Sesuaikan jumlah titik-titik (../) dengan struktur folder Anda!
 import HomePage from '../../../pages/Dashboard/HomePage';
 

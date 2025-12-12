@@ -1,4 +1,4 @@
-import { Given, When, Then } from "@badeball/cypress-cucumber-preprocessor";
+import { Given, When, Then, And } from "@badeball/cypress-cucumber-preprocessor";
 // Perhatikan jumlah "../" untuk keluar dari folder Authentication -> common-steps -> e2e -> root
 import RegisterPage from '../../../pages/Authentication/RegisterPage';
 

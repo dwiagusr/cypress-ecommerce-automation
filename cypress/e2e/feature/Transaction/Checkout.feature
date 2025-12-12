@@ -8,19 +8,35 @@ Feature: Product Purchase Flow
     Then I should see the "My Account" page
 
   Scenario: Successful Checkout for a Product
-    # Cari produk dulu (Gunakan logic yang sudah ada di HomePage)
+    # 1. Search for Product
     Given I search for product "HTC Touch HD"
-    And I click the search button
+    When I click the search button
     
-    # Masuk ke halaman detail produk & Add to Cart
+    # 2. Apply Filter (Availability)
+    And I verify for duplicate filter options named "In stock"
+    And I select "In stock" from the filter options
+    
+    # 3. Select Product from Results
+    When I select "HTC Touch HD" from the search results
+    And I verify the product is in stock
+    
+    # 4. Add to Cart & Proceed
     When I add the product to the cart
     And I proceed to checkout
     
-    # Proses Checkout (Isi Alamat & Pembayaran)
+    # 5. Checkout Process (One Page Checkout)
+    # Step: Fill Billing Details
     And I fill the billing details with valid data
-    And I confirm the delivery method
-    And I confirm the payment method
-    And I confirm the order
     
-    # Verifikasi Akhir
+    # Step: Input Comment & Terms
+    And I fill the order comment "QA Automation Portfolio Test" and agree to terms
+    
+    # [NEW] Step: Verify Order Summary (Product Name, Address, Comment)
+    # This ensures data integrity before final confirmation
+    Then I verify the order summary details with product "HTC Touch HD" and comment "QA Automation Portfolio Test"
+    
+    # 6. Final Execution
+    When I confirm the order
+    
+    # 7. Final Verification
     Then I should see the order success message "Your order has been placed!"

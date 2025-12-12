@@ -12,6 +12,14 @@ module.exports = defineConfig({
   viewportHeight: 720,
 
   e2e: {
+    // Mengatur Loading Page Timeout 
+    pageLoadTimeout: 120000,
+
+    // Waiting Element Page Timeout
+    defaultCommandTimeout: 10000,
+    
+    // 👇 Konfigurasi Cucumber BDD
+
     specPattern: "**/*.feature",
     async setupNodeEvents(on, config) {
       // Setup untuk Cucumber BDD

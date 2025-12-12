@@ -44,4 +44,4 @@ cypress/
 │   ├── Transaction/
 │   └── HomePage.js
 ├── support/                # Custom commands & E2E config
-└── videos/                 # Test Execution Recordings
+└── videos/                 # Test Execution Recording

@@ -1,4 +1,4 @@
-import { Given, When, Then } from "@badeball/cypress-cucumber-preprocessor";
+import { Given, When, Then, And } from "@badeball/cypress-cucumber-preprocessor";
 import LoginPage from '../../../pages/Authentication/LoginPage'; 
 // (Sesuaikan path import di atas dengan struktur folder Anda saat ini)
 
