@@ -1,5 +1,8 @@
 class LoginPage {
-    // --- Selectors ---
+    // =================================================================
+    // SELECTORS
+    // =================================================================
+
     getEmailInput() {
         return cy.get('#input-email');
     }
@@ -12,16 +15,20 @@ class LoginPage {
         return cy.get('input[value="Login"]');
     }
     
+    // Header used to verify successful login
     getAccountHeading() {
         return cy.contains('h2', 'My Account');
     }
 
-    // [PENTING] Selector ini yang dicari oleh tes Anda sekarang
+    // Alert banner used to verify failed login attempts
     getErrorAlert() {
         return cy.get('.alert-danger');
     }
 
-    // --- Actions ---
+
+    // =================================================================
+    // ACTIONS
+    // =================================================================
     
     visitLoginPage() {
         cy.visit('index.php?route=account/login'); 
@@ -36,16 +43,21 @@ class LoginPage {
         this.getLoginButton().click();
     }
     
-    // --- Assertions ---
+
+    // =================================================================
+    // VERIFICATIONS (ASSERTIONS)
+    // =================================================================
     
     verifySuccessLogin() {
+        // Confirm user is on the dashboard by checking the heading
         this.getAccountHeading().should('contain', 'My Account');
     }
 
-    // [PENTING] Fungsi ini yang menyebabkan error "is not a function" tadi
-    // Pastikan fungsi ini ada di dalam kurung kurawal class LoginPage
     verifyErrorMessage(expectedText) {
-        this.getErrorAlert().should('contain', expectedText);
+        // Validate that the error alert is visible and contains the expected text
+        this.getErrorAlert()
+            .should('be.visible')
+            .and('contain', expectedText);
     }
 }
 

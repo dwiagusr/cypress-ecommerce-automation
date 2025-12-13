@@ -16,6 +16,8 @@ class CheckoutPage {
     // Other Elements
     getOrderCommentInput() { return cy.get('textarea[name="comment"]'); }
     getTermsCheckbox()     { return cy.get('input[name="agree"]'); }
+    
+    // Generic Continue Button (Finds button with text "Continue")
     getContinueButton()    { return cy.contains('button', 'Continue'); }
 
     // Confirm Order Section Selectors
@@ -36,26 +38,22 @@ class CheckoutPage {
 
     fillBillingDetails() {
         const newAddressSelector = '#input-payment-address-new';
-        // We check the document body to see if the radio button exists.
+        
+        // Check document body to handle "Existing Address" vs "New Address" logic
         cy.get('body').then(($body) => {
-            // Selector for the "New Address" radio button
-            const Selector = '#input-payment-address-new';
-            // Check if the radio button exists
             if ($body.find(newAddressSelector).length > 0) {
                 // CASE 1: Existing User (Radio button is present)
-                // We must click "New Address" to reveal the hidden input form.
-                cy.log('Existing address found. Switching to "New Address" .');
-                cy.get(Selector).should('exist').click({force: true});
-
-                // Wait a moment
+                // Switch to "New Address" to reveal the form
+                cy.log('Existing address found. Switching to "New Address".');
+                this.getNewAddressRadio().should('exist').click({force: true});
                 cy.wait(500);
             } else {
-                // CASE 2: New User (No radio button)
+                // CASE 2: New User (No radio button, form is already visible)
                 cy.log('No existing address found. Proceeding with new address form.');
             }
         });
 
-        // Populate dummy address data
+        // Populate address data
         this.getFirstNameInput().type('QA');
         this.getLastNameInput().type('User');
         this.getAddressInput().type('Jalan Teknologi No. 10');
@@ -65,45 +63,42 @@ class CheckoutPage {
         // Handle Dropdown (Select)
         this.getCountrySelect().select('Indonesia');
         
-        // Wait for Zone (Province) loading to complete (AJAX)
+        // Wait for Zone (Province) loading (AJAX)
         cy.wait(1000); 
         this.getZoneSelect().select('Jakarta');
-
-        // If the One Page Checkout updates automatically, this might not be needed.
-        // Based on standard OpenCart, we usually click continue on billing to render the rest.
-        // this.getBillingContinueBtn().click(); 
     }
 
     fillOrderComment(message) {
-        // Input optional message for the order
         this.getOrderCommentInput().type(message);
     }
 
     agreeTermsAndConditions() {
-        // Force check the hidden checkbox typically used in custom UI themes
+        // Force check because it might be covered by custom UI
         this.getTermsCheckbox().check({ force: true });
     }
 
     clickContinue() {
         this.getContinueButton().should('be.visible').click();
     }
+
+
     // =================================================================
     // VERIFICATIONS (ASSERTIONS)
     // =================================================================
 
     verifyOrderSummary(productName, expectedComment) {
-        // 1. Verify Header "Confirm Order" is visible
+        // 1. Verify Header "Confirm Order"
         this.getConfirmOrderHeader()
             .scrollIntoView()
             .should('be.visible');
 
-        // 2. Verify Product Name exists in the summary table
+        // 2. Verify Product Name exists (using 'exist' to handle sticky header issues)
         this.getProductSummaryCell(productName)
             .scrollIntoView({ block: 'nearest' })
             .should('exist')
             .and('contain.text', productName);
 
-        // 3. Verify Payment Address (Check key details)
+        // 3. Verify Payment Address
         this.getPaymentAddressSection()
             .scrollIntoView() 
             .should('contain.text', 'QA User')
@@ -121,24 +116,59 @@ class CheckoutPage {
             .scrollIntoView()
             .should('contain.text', 'Flat Shipping Rate');
 
-        // 6. Verify Order Comments matches what we typed
-        // Note: The comment usually appears as text below the header
-        // We use 'contain' because there might be other labels
+        // 6. Verify Order Comments
         cy.contains('div', expectedComment)
             .scrollIntoView()
             .should('be.visible');
     }
 
     clickConfirmOrder() {
-        // Submit the final order
         this.getConfirmButton().click();
     }
 
     verifyOrderSuccess(message) {
-        // Verify the success message on the landing page
         this.getPageTitle().should('contain', message);
     }
+
+
+    // =================================================================
+    // --- Actions for Negative Scenarios ---
+    // =================================================================
+
+    selectNewAddressOption() {
+        // Explicitly select "New Address" to reveal the form for validation testing
+        this.getNewAddressRadio().should('exist').click({ force: true });
+        cy.wait(500); 
+    }
+
+    fillBillingDetailsSkippingFirstName() {
+        // SKIP First Name to trigger validation error
         
+        this.getLastNameInput().type('User');
+        this.getAddressInput().type('Jalan Teknologi No. 10');
+        this.getCityInput().type('Jakarta');
+        this.getPostCodeInput().type('12345');
+
+        this.getCountrySelect().select('Indonesia');
+        cy.wait(1000); 
+        this.getZoneSelect().select('Jakarta');
+    }
+
+    clickContinueButtonInBilling() {
+        // Reusing the generic continue button as requested
+        this.getContinueButton().should('be.visible').click();
+    }
+
+
+    // =================================================================
+    // VERIFICATIONS FOR NEGATIVE SCENARIOS
+    // =================================================================
+
+    verifyFieldErrorMessage(expectedMessage) {
+        // This targets the div that appears directly under the invalid input
+        cy.contains('.invalid-feedback', expectedMessage)
+            .should('be.visible');
+    }     
 }
 
 export default CheckoutPage;

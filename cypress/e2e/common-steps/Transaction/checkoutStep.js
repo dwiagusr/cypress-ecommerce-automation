@@ -87,3 +87,24 @@ Then('I should see the order success message {string}', function (message) {
     // Verify the success landing page
     checkoutPage.verifyOrderSuccess(message);
 });
+
+// =================================================================
+// --- NEGATIVE SCENARIOS STEPS ---
+// =================================================================
+
+When('I choose to use a new address', function () {
+    checkoutPage.selectNewAddressOption();
+});
+
+When('I fill the billing details but leave First Name empty', function () {
+    checkoutPage.fillBillingDetailsSkippingFirstName();
+});
+
+When('I click the continue button in billing details', function () {
+    // Note: This clicks the specific continue button for the address section
+    checkoutPage.clickContinueButtonInBilling();
+});
+
+Then('I should see an error message {string}', function (errorMessage) {
+    checkoutPage.verifyFieldErrorMessage(errorMessage);
+});
