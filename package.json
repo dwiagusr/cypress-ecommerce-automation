@@ -21,5 +21,8 @@
     "stepDefinitions": [
       "cypress/e2e/common-steps/**/*.js"
     ]
+  },
+  "dependencies": {
+    "xlsx": "^0.18.5"
   }
 }

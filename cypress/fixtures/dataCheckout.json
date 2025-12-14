@@ -1,0 +1,43 @@
+[
+  {
+    "First Name": "Budi",
+    "Last Name": "Santoso",
+    "Company": "PT Maju Jaya",
+    "Address 1": "Jalan Sudirman No. 10",
+    "Address 2": "Lantai 5",
+    "City": "Jakarta",
+    "Post Code": 10220,
+    "Country": "Indonesia",
+    "Region / State": "Jakarta"
+  },
+  {
+    "First Name": "Siti",
+    "Last Name": "Aminah",
+    "Address 1": "Gang Melati No. 45",
+    "City": "Bandung",
+    "Post Code": 40132,
+    "Country": "Indonesia",
+    "Region / State": "Jawa Barat"
+  },
+  {
+    "First Name": "John",
+    "Last Name": "Doe",
+    "Company": "Tech Corp",
+    "Address 1": "123 Baker Street",
+    "Address 2": "Apt 4B",
+    "City": "London",
+    "Post Code": "NW1 6XE",
+    "Country": "United Kingdom",
+    "Region / State": "Greater London"
+  },
+  {
+    "First Name": "Sarah",
+    "Last Name": "Connor",
+    "Company": "Skynet Systems",
+    "Address 1": "456 Terminator Blvd",
+    "City": "Manchester",
+    "Post Code": "M1 1AA",
+    "Country": "United Kingdom",
+    "Region / State": "Lancashire"
+  }
+]

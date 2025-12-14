@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@steps/*": ["cypress/e2e/common-steps/*"],
+      "@features/*": ["cypress/e2e/feature/*"],
+      "@pages/*": ["cypress/pages/*"],
+      "@fixtures/*": ["cypress/fixtures/*"],
+      "@support/*": ["cypress/support/*"]
+    }
+  },
+  "include": [
+    "cypress/**/*.js",
+    "*.js"
+  ]
+}

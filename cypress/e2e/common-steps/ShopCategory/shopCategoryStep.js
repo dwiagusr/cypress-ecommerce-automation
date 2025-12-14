@@ -1,22 +1,24 @@
 import { Given, When, Then, And } from "@badeball/cypress-cucumber-preprocessor";
-// Sesuaikan jumlah titik-titik (../) dengan struktur folder Anda!
-import HomePage from '../../../pages/Dashboard/HomePage';
+// Import the Page Object
+import HomePage from '@pages/Dashboard/HomePage';
 
 const homePage = new HomePage();
-
+// =================================================================
 // --- Step Definitions ---
+// =================================================================
 
 Given('I am on the home page', () => {
-    // Memanggil fungsi dari HomePage yang sudah kita buat
+    // Function calls the visitHomePage() logic in HomePage.js
     homePage.visitHomePage();
 });
 
 Then('I should see the {string} sub-category link', (brandName) => {
-    // Fungsi ini memanggil logic 'should exist' di HomePage.js
+    // Function calls the verifySubMenuLinkPresence() logic in HomePage.js
     homePage.verifySubMenuLinkPresence(brandName);
 });
 
 When('I hover over the {string} menu', (menuName) => {
+    // Function calls the hoverMenu() logic in HomePage.js
     homePage.hoverMenu(menuName);
 });
 

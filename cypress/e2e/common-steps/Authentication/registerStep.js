@@ -1,10 +1,12 @@
 import { Given, When, Then, And } from "@badeball/cypress-cucumber-preprocessor";
-// Perhatikan jumlah "../" untuk keluar dari folder Authentication -> common-steps -> e2e -> root
-import RegisterPage from '../../../pages/Authentication/RegisterPage';
+// Import the Page Object
+import RegisterPage from '@pages/Authentication/RegisterPage';
 
 const registerPage = new RegisterPage();
 
-// Step Definitions untuk Registrasi
+// =================================================================
+// --- Step Definitions ---
+// =================================================================
 
 Given('I am on the registration page', () => {
     registerPage.visitRegisterPage();

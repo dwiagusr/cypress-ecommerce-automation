@@ -6,36 +6,40 @@ class CheckoutPage {
     // --- Billing Details Form ---
     getFirstNameInput() { return cy.get('#input-payment-firstname'); }
     getLastNameInput()  { return cy.get('#input-payment-lastname'); }
+    // Added optional selectors for full data coverage
+    getCompanyInput()   { return cy.get('#input-payment-company'); } 
     getAddressInput()   { return cy.get('#input-payment-address-1'); }
+    // Added optional selector for Address 2
+    getAddress2Input()  { return cy.get('#input-payment-address-2'); }
     getCityInput()      { return cy.get('#input-payment-city'); }
     getPostCodeInput()  { return cy.get('#input-payment-postcode'); }
     getCountrySelect()  { return cy.get('#input-payment-country'); }
     getZoneSelect()     { return cy.get('#input-payment-zone'); }
     getNewAddressRadio(){ return cy.get('#input-payment-address-new'); }
-
-    // Other Elements
+    // --- Order Comment & Terms ---
     getOrderCommentInput() { return cy.get('textarea[name="comment"]'); }
     getTermsCheckbox()     { return cy.get('input[name="agree"]'); }
-    
+    // --- Buttons ---
     // Generic Continue Button (Finds button with text "Continue")
     getContinueButton()    { return cy.contains('button', 'Continue'); }
-
-    // Confirm Order Section Selectors
-    getConfirmOrderHeader() { return cy.contains('h1, h2, h3', 'Confirm Order'); }
+    getConfirmButton()     { return cy.get('#button-confirm'); }
+    // --- Confirm Order Section Selectors ---
+    getConfirmOrderHeader()     { return cy.contains('h1, h2, h3', 'Confirm Order'); }
     getProductSummaryCell(productName) { return cy.contains('.table-responsive table td', productName); }
-    getPaymentAddressSection() { return cy.contains('h4, legend', 'Payment Address').parent(); }
+    getPaymentAddressSection()  { return cy.contains('h4, legend', 'Payment Address').parent(); }
     getShippingAddressSection() { return cy.contains('h4, legend', 'Shipping Address').parent(); }
-    getShippingMethodSection() { return cy.contains('h4, legend', 'Shipping Method').parent(); }
-    getConfirmButton() { return cy.get('#button-confirm'); }
-
-    // Success Page Element
+    getShippingMethodSection()  { return cy.contains('h4, legend', 'Shipping Method').parent(); }
+    // --- Success Page Element ---
     getPageTitle() { return cy.get('#content h1'); }
 
 
     // =================================================================
-    // ACTIONS
+    // ACTIONS (STATIC / MANUAL TEST)
     // =================================================================
 
+    /**
+     * Fills billing details with hardcoded data (Used for @Checkout feature)
+     */
     fillBillingDetails() {
         const newAddressSelector = '#input-payment-address-new';
         
@@ -53,7 +57,7 @@ class CheckoutPage {
             }
         });
 
-        // Populate address data
+        // Populate address data with static values
         this.getFirstNameInput().type('QA');
         this.getLastNameInput().type('User');
         this.getAddressInput().type('Jalan Teknologi No. 10');
@@ -68,12 +72,93 @@ class CheckoutPage {
         this.getZoneSelect().select('Jakarta');
     }
 
+    // =================================================================
+    // ACTIONS (DYNAMIC / DDT)
+    // =================================================================
+
+    /**
+     * Fills billing details using data from JSON/Excel (Used for @CheckoutDDT feature)
+     * @param {Object} data - The row data object from the fixture file
+     */
+    fillBillingDetailsDynamic(data) {
+        const newAddressSelector = '#input-payment-address-new';
+        
+        // Reuse logic to switch to "New Address" if the user has previous history
+        cy.get('body').then(($body) => {
+            if ($body.find(newAddressSelector).length > 0) {
+                this.getNewAddressRadio().should('exist').click({force: true});
+                cy.wait(500);
+            }
+        });
+
+        // Clear existing text and Type new data
+        // Using data['HeaderName'] matching the Excel file
+        this.getFirstNameInput()
+            .scrollIntoView({ block: 'center' })
+            .clear()
+            .type(data['First Name']);
+
+        this.getLastNameInput()
+            .scrollIntoView({ block: 'center' })
+            .clear()
+            .type(data['Last Name']);
+
+        // Handle Optional Field: Company
+        if (data['Company']) {
+            this.getCompanyInput()
+                .scrollIntoView({ block: 'center' })
+                .clear()
+                .type(data['Company']);
+        }
+
+        this.getAddressInput()
+            .scrollIntoView({ block: 'center' })
+            .should('be.visible')
+            .clear()
+            .type(data['Address 1'], { force: true });
+
+        // Handle Optional Field: Address 2
+        if (data['Address 2']) {
+            this.getAddress2Input()
+                .scrollIntoView({ block: 'center' })
+                .clear()
+                .type(data['Address 2'], { force: true });
+        }
+
+        this.getCityInput()
+            .scrollIntoView({ block: 'center' })
+            .clear()
+            .type(data['City'], { force: true });
+        
+        // Convert Post Code to string to ensure safety
+        this.getPostCodeInput()
+            .scrollIntoView({ block: 'center' })
+            .clear()
+            .type(data['Post Code'].toString());
+
+        // Handle Dropdowns
+        this.getCountrySelect()
+            .scrollIntoView({ block: 'center' })
+            .select(data['Country']);
+        
+        // Wait for Zone to load properly
+        cy.wait(1000); 
+        this.getZoneSelect()
+            .scrollIntoView({ block: 'center' })
+            .should('be.visible')
+            .select(data['Region / State']);
+    }
+
+    // =================================================================
+    // SHARED ACTIONS
+    // =================================================================
+
     fillOrderComment(message) {
-        this.getOrderCommentInput().type(message);
+        this.getOrderCommentInput().clear().type(message);
     }
 
     agreeTermsAndConditions() {
-        // Force check because it might be covered by custom UI
+        // Force check because it might be covered by custom UI elements
         this.getTermsCheckbox().check({ force: true });
     }
 
@@ -81,24 +166,31 @@ class CheckoutPage {
         this.getContinueButton().should('be.visible').click();
     }
 
+    clickConfirmOrder() {
+        this.getConfirmButton().click();
+    }
+
 
     // =================================================================
     // VERIFICATIONS (ASSERTIONS)
     // =================================================================
 
+    /**
+     * Verifies order summary with static/expected text (Used for @Checkout feature)
+     */
     verifyOrderSummary(productName, expectedComment) {
         // 1. Verify Header "Confirm Order"
         this.getConfirmOrderHeader()
             .scrollIntoView()
             .should('be.visible');
 
-        // 2. Verify Product Name exists (using 'exist' to handle sticky header issues)
+        // 2. Verify Product Name exists
         this.getProductSummaryCell(productName)
             .scrollIntoView({ block: 'nearest' })
             .should('exist')
             .and('contain.text', productName);
 
-        // 3. Verify Payment Address
+        // 3. Verify Payment Address (Static Check)
         this.getPaymentAddressSection()
             .scrollIntoView() 
             .should('contain.text', 'QA User')
@@ -122,8 +214,25 @@ class CheckoutPage {
             .should('be.visible');
     }
 
-    clickConfirmOrder() {
-        this.getConfirmButton().click();
+    /**
+     * Verifies order summary dynamically based on Excel data (Used for @CheckoutDDT feature)
+     */
+    verifyOrderSummaryDynamic(productName, data, expectedComment) {
+        // Verify Header
+        this.getConfirmOrderHeader().scrollIntoView().should('be.visible');
+
+        // Verify Product Name
+        this.getProductSummaryCell(productName).should('exist');
+
+        // Verify Payment Address matches the Excel Data
+        this.getPaymentAddressSection().scrollIntoView()
+            .should('contain.text', data['First Name'])
+            .should('contain.text', data['Last Name'])
+            .should('contain.text', data['Address 1'])
+            .should('contain.text', data['City']);
+
+        // Verify Comment
+        cy.contains('div', expectedComment).scrollIntoView().should('be.visible');
     }
 
     verifyOrderSuccess(message) {
@@ -132,7 +241,7 @@ class CheckoutPage {
 
 
     // =================================================================
-    // --- Actions for Negative Scenarios ---
+    // ACTIONS FOR NEGATIVE SCENARIOS
     // =================================================================
 
     selectNewAddressOption() {
@@ -142,8 +251,7 @@ class CheckoutPage {
     }
 
     fillBillingDetailsSkippingFirstName() {
-        // SKIP First Name to trigger validation error
-        
+        // SKIP First Name input to trigger validation error
         this.getLastNameInput().type('User');
         this.getAddressInput().type('Jalan Teknologi No. 10');
         this.getCityInput().type('Jakarta');
