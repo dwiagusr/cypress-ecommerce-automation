@@ -1,47 +1,104 @@
-# 🛍️ E-Commerce Automation Framework
+# 🛒 Cypress E2E Automation Framework - Ecommerce Playground
 
-![Cypress](https://img.shields.io/badge/-cypress-%23E5E5E5?style=for-the-badge&logo=cypress&logoColor=058a5e)
-![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
-![Cucumber](https://img.shields.io/badge/Cucumber-232F3E?style=for-the-badge&logo=cucumber&logoColor=43B02A)
+> **🚧 PROJECT STATUS: ACTIVE DEVELOPMENT (IN PROGRESS) 🚧**
+>
+> *This project is currently being actively developed and refined. New scenarios, optimizations, and features are being added regularly.*
 
-This repository contains an **End-to-End (E2E) Test Automation Framework** built for testing an E-Commerce platform (LambdaTest Playground).
-
-The project is designed using **Cypress** integrated with **Cucumber (BDD)** and follows the **Page Object Model (POM)** design pattern to ensure scalability, maintainability, and readability.
-
-## 🚀 Key Features
-
-* **Behavior-Driven Development (BDD):** Test scenarios are written in Gherkin (`.feature` files), making them readable for non-technical stakeholders.
-* **Page Object Model (POM):** UI elements and actions are separated from the test logic, making the code reusable and easy to maintain.
-* **Modular Structure:** Features, steps, and pages are organized by modules (`Authentication`, `Dashboard`, `Transaction`).
-* **Dynamic Data:** Includes logic for random email generation and dynamic selectors for menu navigation.
-* **Cloud Reporting:** Integrated with **Cypress Cloud** for video recording, screenshots, and analytics.
-* **Cross-Browser Support:** Capable of running on Chrome, Electron, and Edge.
+## 📋 Overview
+This repository contains an automated testing framework built with **Cypress** and **Cucumber (BDD)** for an E-commerce Sandbox website. The framework is designed to demonstrate modern E2E testing practices, focusing on maintainability, scalability, and robust error handling utilizing the **Page Object Model (POM)** pattern.
 
 ## 🛠️ Tech Stack
-
+* **Framework:** Cypress (E2E Testing)
 * **Language:** JavaScript (Node.js)
-* **Framework:** Cypress (v13+)
-* **Preprocessor:** @badeball/cypress-cucumber-preprocessor
-* **Bundler:** Esbuild
-* **CI/CD & Reporting:** Cypress Cloud
+* **Design Pattern:** Page Object Model (POM)
+* **BDD:** Cucumber (Gherkin Syntax) using `@badeball/cypress-cucumber-preprocessor`
+* **Test Data:** JSON & Excel Integration
+* **Reporting:** Cypress Default / HTML Reports (Planned)
 
 ## 📂 Project Structure
+The project follows a modular structure to ensure maintainability:
 
 ```text
-cypress/
-├── e2e/
-│   ├── common-steps/       # Step Definitions (Logic)
-│   │   ├── Authentication/
-│   │   ├── Dashboard/
-│   │   └── Transaction/
-│   └── feature/            # Gherkin Scenarios
-│       ├── Authentication/
-│       ├── ShopCategory/
-│       └── Transaction/
-├── pages/                  # Page Objects (Selectors & Actions)
-│   ├── Authentication/
-│   ├── Dashboard/
-│   ├── Transaction/
-│   └── HomePage.js
-├── support/                # Custom commands & E2E config
-└── videos/                 # Test Execution Recording
+CYPRESS\
++---downloads
++---e2e
+|   +---common-steps           # Step Definitions (Logic layer)
+|   |   +---Authentication
+|   |   +---Dashboard
+|   |   +---ShopCategory
+|   |   \---Transaction
+|   |
+|   \---feature                # Gherkin Feature Files (Scenarios)
+|       +---Authentication
+|       +---Dashboard
+|       +---ShopCategory
+|       \---Transaction
+|
++---fixtures                   # Test Data (JSON/Excel)
+|       dataCheckout.json
+|       dataCheckout.xlsx
+|
++---pages                      # Page Objects (Selectors & Actions)
+|   +---Authentication
+|   +---Dashboard
+|   +---ShopCategory
+|   \---Transaction
+|
++---screenshots                # Evidence of failures/runs
+\---support                    # Custom commands & config
+```
+
+## ✨ Key Features Implemented
+
+### 1. Page Object Model (POM)
+Complete separation of test logic (Step Definitions) from UI interaction logic (Pages) for better reusability.
+* **Authentication:** Login & Register pages.
+* **Dashboard:** Homepage navigation, global search, and dynamic side-filters.
+* **Transaction:** Product details, cart management, and checkout billing forms.
+
+### 2. Data-Driven Testing (DDT)
+* **JSON Integration:** Utilizes `fixtures/dataCheckout.json` to execute checkout loops with multiple data sets (iterative testing).
+* **Dynamic Form Filling:** Automates input entry based on external data sources efficiently.
+
+### 3. Robust Handling Strategies (Advanced)
+* **🔄 Fallback Strategy (Self-Healing):** Implemented smart logic to handle **"Out of Stock"** items. If the automated test encounters an out-of-stock product, it dynamically retries with the next available product instead of failing.
+* **👁️ Dynamic Selectors:** Usage of robust jQuery-style filtering (e.g., `.filter(':visible')`) to correctly interact with responsive elements, resolving conflicts between Mobile and Desktop DOM elements.
+* **⏳ Smart Waiting:** Optimized `cy.intercept` strategies to wait for network API responses, eliminating flaky tests caused by hard-coded sleeps.
+
+## 🧪 Test Scenarios Covered
+* **Authentication:**
+    * Valid & Invalid Login flows.
+    * User Registration.
+* **Shopping & Browsing:**
+    * Browsing Categories (e.g., Mobiles).
+    * Product Search functionality.
+    * Sidebar Filtering (Price range, Stock status).
+* **Checkout Transaction:**
+    * Standard Checkout flow (End-to-End).
+    * **DDT:** Checkout loop using multiple user profiles.
+    * **Negative Testing:** Validation of mandatory fields and error handling.
+
+## ⚙️ Prerequisites
+Before running the tests, ensure you have the following installed:
+* **Node.js** (v14 or higher)
+* **npm** (Node Package Manager)
+
+## 🚀 How to Run
+
+1. **Install Dependencies:**
+    ```bash
+    npm install
+    ```
+
+2. **Open Cypress Test Runner (GUI):**
+    ```bash
+    npx cypress open
+    ```
+
+3. **Run All Tests (Headless Mode):**
+    ```bash
+    npx cypress run
+    ```
+
+---
+*Created by **Dwi Agus Rianto***
