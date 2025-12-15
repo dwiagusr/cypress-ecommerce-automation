@@ -4,7 +4,7 @@ class HomePage {
     // =================================================================
 
     // --- Search & Header ---
-    getSearchInput()        { return cy.get('input[name="search"]').filter(':visible'); }
+    getSearchInput()        { return cy.get('input[name="search"]'); }
     getSearchButton()       { return cy.get("button[class='type-text']").filter(':visible'); }
     getSearchResultHeader() { return cy.get('#content h1'); }
     getCategoryHeader()     { return cy.get('#content h2'); }
