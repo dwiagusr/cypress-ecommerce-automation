@@ -17,3 +17,8 @@ Thumbs.db
 # Environment variables
 .env
 node_modules
+
+# Reports
+cypress/reports/
+cypress/videos/
+cypress/screenshots/
