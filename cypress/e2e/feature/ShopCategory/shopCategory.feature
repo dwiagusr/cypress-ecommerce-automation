@@ -1,15 +1,17 @@
-Feature: Mega Menu Content Verification
+@ShopCategory
+Feature: Mega Menu Navigation
 
-  Background:
+  Scenario Outline: Verify Mega Menu Redirects to Correct Brand Page
     Given I am on the home page
-
-  Scenario Outline: Verify Brand Spelling in Mega Menu
     When I hover over the "Mega Menu" menu
-    Then I should see the "<brand>" option in the list
+    And I select the "<brand>" sub-category
+    Then I should see the "<brand>" product list header
 
     Examples:
       | brand   |
-      | HTC     |
+      | LG      |
       | Samsung |
+      | Nokia   |
+      | HTC     |
       | Apple   |
       | Xiaomi  |
