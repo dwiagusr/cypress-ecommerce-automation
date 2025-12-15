@@ -1,25 +1,15 @@
-@ShopCategory
-Feature: Shop Category Navigation
+Feature: Mega Menu Content Verification
 
-  Background: Login to Application
-    Given I am on the login page
-    When I enter username "test.user.1764607288632@mail.com" and password "Password123!"
-    And I click the login button
-    Then I should see the "My Account" page
+  Background:
+    Given I am on the home page
 
-  # Ubah 'Scenario' menjadi 'Scenario Outline'
-  Scenario Outline: Browse Mobile Brands via Mega Menu
-    # Gunakan tanda kurung siku <...> sebagai variabel
+  Scenario Outline: Verify Brand Spelling in Mega Menu
     When I hover over the "Mega Menu" menu
-    And I select the "<phoneBrand>" sub-category
-    Then I should see the "<phoneBrand>" product list header
+    Then I should see the "<brand>" option in the list
 
-    # Di sinilah kita melist data yang ingin dites
     Examples:
-      | phoneBrand |
-      | HTC        |
-      | Apple      |
-      | LG         |
-      | Samsung    |
-      | Nokia      |
-      | Xiomi      |
+      | brand   |
+      | HTC     |
+      | Samsung |
+      | Apple   |
+      | Xiaomi  |

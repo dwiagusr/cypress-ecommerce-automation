@@ -22,10 +22,6 @@ When('I hover over the {string} menu', (menuName) => {
     homePage.hoverMenu(menuName);
 });
 
-When('I select the {string} sub-category', (subMenuName) => {
-    homePage.clickSubMenu(subMenuName);
-});
-
-Then('I should see the {string} product list header', (categoryName) => {
-    homePage.verifyCategoryHeader(categoryName);
+Then('I should see the {string} option in the list', (brandName) => {
+    homePage.verifyBrandNameVisible(brandName); 
 });

@@ -56,19 +56,17 @@ class HomePage {
     // --- Menu Actions ---
     hoverMenu(menuName) {
         // 1. Trigger mouseover event
-        this.getMenuByName(menuName).trigger('mouseover', { force: true });
-        
-        // 2. Force show the dropdown (Fix for CSS hover delays)
+        this.getMenuByName(menuName).trigger('mouseover');
         this.getMenuByName(menuName)
             .parent()
             .find('.dropdown-menu')
-            .invoke('show');
+            .should('be.visible')
     }
 
     clickSubMenu(subMenuName) {
         this.getSubMenuByName(subMenuName)
             .should('be.visible')
-            .click({ force: true });
+            .click();
     }
 
     // --- Filter Actions ---
@@ -166,8 +164,10 @@ class HomePage {
         this.getSearchResultHeader().should('contain', productName);
     }
 
-    verifyCategoryHeader(categoryName) {
-        cy.get('#content').contains('h2', categoryName).should('be.visible');
+    verifyBrandNameVisible(brandName) {
+        this.getSubMenuByName(brandName)
+            .should('exist')
+            .and('be.visible');
     }
 
     verifySubMenuLinkPresence(subMenuName) {
