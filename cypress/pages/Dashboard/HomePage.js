@@ -13,10 +13,14 @@ class HomePage {
     getMenuByName(menuName) { return cy.contains('.navbar-nav a', menuName); }
     getSubMenuByName(subMenuName) { return cy.get(`a[title='${subMenuName}']`); }
 
+    // --- Page Header Selectors ---
+    // Finds the H1 header on the product category page to verify redirection
+    getPageHeader() { 
+        return cy.get('.content-title h1'); }
+
     // --- Filters (Sidebar) ---
     getFilterHeaderByName(filterName) { 
-        return cy.contains('.mz-filter-group-header', new RegExp(filterName, 'i')); 
-    }
+        return cy.contains('.mz-filter-group-header', new RegExp(filterName, 'i')); }
     
     // Finds filter labels but ensures we only pick visible ones to avoid hidden mobile elements
     getFilterOption(optionName) { 
@@ -56,19 +60,17 @@ class HomePage {
     // --- Menu Actions ---
     hoverMenu(menuName) {
         // 1. Trigger mouseover event
-        this.getMenuByName(menuName).trigger('mouseover', { force: true });
-        
-        // 2. Force show the dropdown (Fix for CSS hover delays)
+        this.getMenuByName(menuName).trigger('mouseover');
         this.getMenuByName(menuName)
             .parent()
             .find('.dropdown-menu')
-            .invoke('show');
+            .should('be.visible')
     }
 
     clickSubMenu(subMenuName) {
         this.getSubMenuByName(subMenuName)
             .should('be.visible')
-            .click({ force: true });
+            .click();
     }
 
     // --- Filter Actions ---
@@ -166,8 +168,59 @@ class HomePage {
         this.getSearchResultHeader().should('contain', productName);
     }
 
-    verifyCategoryHeader(categoryName) {
-        cy.get('#content').contains('h2', categoryName).should('be.visible');
+    verifyBrandNameVisible(brandName) {
+        // 1. Get the parent container (Dropdown menu) and ensure it is visible
+        cy.get('.dropdown-menu').should('be.visible').then(($menu) => {
+            
+            // 2. Find the child element using synchronous jQuery (instead of cy.get)
+            // Note: This prevents the script from crashing immediately if the element is missing,
+            // allowing us to handle the error manually below.
+            const $element = $menu.find(`a[title='${brandName}']`);
+
+            // 3. Verification Logic
+            if ($element.length > 0) {
+                // Success Scenario: Element found
+                cy.log(`✅ PASSED: Brand "${brandName}" is available and correct.`);
+            } else {
+                // Failure Scenario: Element not found (Custom Log)
+                const errorMessage = `❌ FAILED: Brand "${brandName}" was NOT found! Possible typo or content bug.`;
+                
+                // Print the custom error message to the Cypress Command Log
+                cy.log(errorMessage); 
+                
+                // 4. Force the test to fail explicitly
+                throw new Error(errorMessage); 
+            }
+        });
+    }
+
+    verifyPageHeader(expectedText) {
+        // 1. Get the header element using the fixed selector
+        this.getPageHeader().should('be.visible').then(($header) => {
+            
+            // 2. Capture the ACTUAL text from the website
+            const actualText = $header.text().trim();
+
+            // 3. Compare Actual vs Expected
+            // Using includes() handles cases where header is "Apple Inc." but we expect "Apple"
+            if (actualText.includes(expectedText)) {
+                
+                // Scenario: Success (Correct Redirection)
+                cy.log(`✅ PASSED: Correct redirection. Header is "${actualText}".`);
+            
+            } else {
+                
+                // Scenario: BUG FOUND (Wrong Redirection)
+                // This will catch the case if you click HTC but land on Canon page
+                const errorMessage = `🐞 BUG DETECTED: Wrong Redirection! Expected header to contain "${expectedText}", but found "${actualText}".`;
+                
+                // Print specific error to Cypress Log
+                cy.log(errorMessage);
+                
+                // Throw error to ensure the test status becomes FAILED
+                throw new Error(errorMessage);
+            }
+        });
     }
 
     verifySubMenuLinkPresence(subMenuName) {
