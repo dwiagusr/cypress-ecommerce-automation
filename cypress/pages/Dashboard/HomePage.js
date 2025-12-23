@@ -4,9 +4,10 @@ class HomePage {
     // =================================================================
 
     // --- Search & Header ---
-    getSearchInput()        { return cy.get('input[name="search"]'); }
+    // Baris 8 di HomePage.js
+    getSearchInput()        { return cy.get('input[name="search"]').filter(':visible'); }
     getSearchButton()       { return cy.get("button[class='type-text']").filter(':visible'); }
-    getSearchResultHeader() { return cy.get('#content h1'); }
+    getSearchResultHeader() { return cy.get('h1.h4').should('be.visible'); }
     getCategoryHeader()     { return cy.get('#content h2'); }
 
     // --- Navigation Menu (Navbar) ---
@@ -38,6 +39,9 @@ class HomePage {
             .filter(':visible')
             .contains('Add to Cart', { matchCase: false }); 
     }
+
+    // -- Validation Error Message --
+    getErrorMessage() { return cy.get('.entry-content p'); }
 
 
     // =================================================================
@@ -250,6 +254,41 @@ class HomePage {
             }
         });
     }
+
+    // --- Search Validation Logic (New Addition) ---
+
+    /**
+     * Iterates through all visible products in the search result
+     * and asserts that each title contains the search keyword.
+     * @param {string} keyword - The search term (e.g., "MacBook")
+     */
+    verifyProductListContains(keyword) {
+        this.getProductTitleLinks().should('be.visible').each(($el) => {
+            // Get the text of the product title and normalize it to lowercase
+            const productTitle = $el.text().trim().toLowerCase();
+            const searchKeyword = keyword.toLowerCase();
+
+            // Log the check for reporting purposes
+            cy.log(`🔍 Checking product: "${productTitle}" contains "${searchKeyword}"?`);
+
+            // Assert that the title contains the keyword
+            expect(productTitle).to.contain(searchKeyword);
+        });
+    }
+
+        /**
+    * Verifies the error message displayed when no products are found.
+    * Uses cy.contains to locate the message within a paragraph tag, 
+    * making the test more robust against dynamic container IDs.
+    * @param {string} expectedMessage - The expected error text
+    */
+    verifyNoProductFoundMessage(expectedMessage) {
+    // We target the 'p' tag that specifically contains the expected message.
+    // This avoids dependency on the '#content' ID which might not exist.
+    cy.contains('p', expectedMessage)
+      .should('be.visible');
 }
+
+} // End of Class
 
 export default HomePage;
