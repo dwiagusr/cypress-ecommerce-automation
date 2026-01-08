@@ -9,11 +9,22 @@ This repository contains an automated testing framework built with **Cypress** a
 
 ## 🛠️ Tech Stack
 * **Framework:** Cypress (E2E Testing)
-* **Language:** JavaScript (Node.js)
+* **Language:** JavaScript (Node.js v20)
 * **Design Pattern:** Page Object Model (POM)
-* **BDD:** Cucumber (Gherkin Syntax) using `@badeball/cypress-cucumber-preprocessor`
-* **Test Data:** JSON & Excel Integration
-* **Reporting:** Cypress Default / HTML Reports (Planned)
+* **BDD:** Cucumber (Gherkin Syntax)
+* **Reporting:** Allure Report & GitHub Pages (Automated)
+* **CI/CD:** GitHub Actions
+
+## 📊 Automated Reporting & CI/CD
+This project is integrated with **GitHub Actions** to provide a fully automated testing pipeline.
+
+* **Live Test Report:** [![Allure Report](https://img.shields.io/badge/Allure-Report-green?style=for-the-badge&logo=allure)](https://dwiagusr.github.io/cypress-ecommerce-automation/)
+  > 🔗 **[Click here to view the latest Live Allure Dashboard](https://dwiagusr.github.io/cypress-ecommerce-automation/)**
+
+* **CI/CD Pipeline:**
+  * **Automated Trigger:** Tests run automatically on every `push` to any branch or `pull_request` to `main`.
+  * **Manual Trigger:** Ability to run tests manually via `workflow_dispatch` in GitHub Actions.
+  * **Continuous Deployment:** Allure reports are automatically generated and deployed to GitHub Pages after every run, ensuring stakeholders always see the latest test results.
 
 ## 📂 Project Structure
 The project follows a modular structure to ensure maintainability:
@@ -95,10 +106,14 @@ Before running the tests, ensure you have the following installed:
     npx cypress open
     ```
 
-3. **Run All Tests (Headless Mode):**
+3. **Run All Tests with Allure Report:**
     ```bash
-    npx cypress run
+    npm run test:allure
+    ```
+4. **Generate & Open Report Locally:**
+    ```bash
+    npm run allure:report && npm run allure:open
     ```
 
 ---
-*Created by **Dwi Agus Rianto***
+Maintained by **Dwi Agus Rianto - QA Engineer**
