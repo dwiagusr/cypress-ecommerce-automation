@@ -6,7 +6,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "cy:open": "cypress open",
-    "cy:record": "cypress run --record --key f48c0508-76de-4191-aa07-2821019b5563"
+    "cy:record": "cypress run --record --key f48c0508-76de-4191-aa07-2821019b5563",
+    "test:allure": "npx cypress run --env allure=true --browser chrome",
+    "allure:report": "allure generate allure-results --clean -o allure-report",
+    "allure:clear": "rimraf allure-results allure-report",
+    "allure:open": "allure open allure-report"
   },
   "keywords": [],
   "author": "",
@@ -14,6 +18,8 @@
   "devDependencies": {
     "@badeball/cypress-cucumber-preprocessor": "^23.2.1",
     "@bahmutov/cypress-esbuild-preprocessor": "^2.2.7",
+    "@shelex/cypress-allure-plugin": "^2.41.2",
+    "allure-commandline": "^2.36.0",
     "cypress": "^13.6.0",
     "cypress-mochawesome-reporter": "^4.0.2",
     "esbuild": "^0.27.0"

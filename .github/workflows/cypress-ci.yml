@@ -1,38 +1,52 @@
-name: E2E Cypress Tests
+name: E2E Cypress Tests with Allure Reporting
 
-# Trigger: Run this workflow on every push to the 'main' branch
 on:
+  # Trigger the workflow on push or pull request events for the main branch
   push:
     branches:
-      - main
+      - '**'
   pull_request:
     branches:
       - main
 
 jobs:
   cypress-run:
-    # Execution Environment: Run on the latest Ubuntu virtual machine
+    name: Cypress Test Execution
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout Code
-      # Retrieves the latest code from your repository so the runner can access it
+      # Step 1: Clone the repository to the runner machine
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      # 2. Run Cypress Tests
-      # Uses the official Cypress GitHub Action to:
-      # - Install Node.js and dependencies (npm install)
-      # - Cache node modules for faster performance
-      # - Execute the tests using the Chrome browser
-      - name: Run Cypress Tests
-        uses: cypress-io/github-action@v6
+      # Step 2: Initialize Node.js environment
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          # Ensure this command matches your package.json script
-          command: npx cypress run --browser chrome
+          node-version: 18
 
-      # 3. Upload Screenshots (On Failure Only)
-      # If the test fails, upload screenshots as artifacts for debugging
+      # Step 3: Install project dependencies defined in package.json
+      - name: Install Dependencies
+        run: npm install
+
+      # Step 4: Execute Cypress tests with Allure environment enabled
+      # 'continue-on-error' is set to true to ensure reporting step runs even if tests fail
+      - name: Run Cypress Tests
+        run: npm run test:allure
+        continue-on-error: true
+
+      # Step 5: Convert raw test results into a visual HTML report
+      - name: Generate Allure Report
+        run: npm run allure:report
+
+      # Step 6: Store the generated report as a downloadable artifact
+      - name: Upload Allure Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: allure-report
+
+      # Step 7: Capture screenshots for failed test cases
       - name: Upload Screenshots
         if: failure()
         uses: actions/upload-artifact@v4
@@ -40,8 +54,7 @@ jobs:
           name: cypress-screenshots
           path: cypress/screenshots
 
-      # 4. Upload Videos (On Failure Only)
-      # Upload video recordings of the failed tests for playback and analysis
+      # Step 8: Capture video recordings for failed test cases
       - name: Upload Videos
         if: failure() 
         uses: actions/upload-artifact@v4

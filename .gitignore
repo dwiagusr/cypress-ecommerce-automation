@@ -23,3 +23,9 @@ node_modules
 cypress/reports/
 cypress/videos/
 cypress/screenshots/
+
+# Allure reporting folders
+allure-results/
+allure-report/
+cypress/screenshots/
+cypress/videos/
